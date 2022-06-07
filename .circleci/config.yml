@@ -7,14 +7,12 @@ commands:
     steps:
       - slack/notify:
           event: fail
-          mentions: "@cicd-pipeline"
           template: basic_fail_1
 
   notify_slack_pass:
     steps:
       - slack/notify:
           event: pass
-          mentions: "@cicd-pipeline"
           template: basic_success_1
 
 jobs:
@@ -123,13 +121,19 @@ jobs:
 workflows:
   default:
     jobs:
-      - build-frontend
-      - build-backend
+      - build-frontend:
+          context: slack-secrets
+      - build-backend:
+          context: slack-secrets
       - test-frontend:
           requires: [build-frontend]
+          context: slack-secrets
       - test-backend:
           requires: [build-backend]
+          context: slack-secrets
       - scan-backend:
           requires: [test-backend]
+          context: slack-secrets
       - scan-frontend:
           requires: [test-frontend, scan-backend]
+          context: slack-secrets
