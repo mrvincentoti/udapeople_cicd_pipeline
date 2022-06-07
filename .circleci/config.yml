@@ -7,12 +7,14 @@ commands:
     steps:
       - slack/notify:
           event: fail
+          mentions: "@cicd-pipeline"
           template: basic_fail_1
 
   notify_slack_pass:
     steps:
       - slack/notify:
           event: pass
+          mentions: "@cicd-pipeline"
           template: basic_success_1
 
 jobs:
@@ -32,8 +34,10 @@ jobs:
       - save_cache:
           paths: [frontend/node_modules]
           key: frontend-build
-      - notify_slack_error
-      - notify_slack_pass
+      - slack/notify:
+          event: pass
+          mentions: "@cicd-pipeline"
+          template: basic_success_1
 
   build-backend:
     docker:
@@ -51,8 +55,6 @@ jobs:
       - save_cache:
           paths: [backend/node_modules]
           key: backend-build
-      - notify_slack_error
-      - notify_slack_pass
 
   test-frontend:
     docker:
@@ -67,8 +69,6 @@ jobs:
             cd frontend
             npm install
             npm run test
-      - notify_slack_error
-      - notify_slack_pass
 
   test-backend:
     docker:
@@ -83,8 +83,6 @@ jobs:
             cd backend
             npm install
             npm run test
-      - notify_slack_error
-      - notify_slack_pass
 
   scan-frontend:
     docker:
@@ -99,8 +97,6 @@ jobs:
             cd frontend
             npm install
             npm audit fix --audit-level=critical --force
-      - notify_slack_error
-      - notify_slack_pass
 
   scan-backend:
     docker:
@@ -115,25 +111,17 @@ jobs:
             cd backend
             npm install
             npm audit fix --audit-level=critical --force
-      - notify_slack_error
-      - notify_slack_pass
 
 workflows:
   default:
     jobs:
-      - build-frontend:
-          context: slack-secrets
-      - build-backend:
-          context: slack-secrets
+      - build-frontend
+      - build-backend
       - test-frontend:
           requires: [build-frontend]
-          context: slack-secrets
       - test-backend:
           requires: [build-backend]
-          context: slack-secrets
       - scan-backend:
           requires: [test-backend]
-          context: slack-secrets
       - scan-frontend:
           requires: [test-frontend, scan-backend]
-          context: slack-secrets
