@@ -2,20 +2,22 @@ version: 2.1
 orbs:
   slack: circleci/slack@4.1
 
-jobs:
-  slack-notification:
-    docker:
-      - image: "cimg/base:stable"
+commands:
+  notify_slack_error:
     steps:
-      - run: Slack notification
       - slack/notify:
           event: fail
           mentions: "@cicd-pipeline"
           template: basic_fail_1
+
+  notify_slack_pass:
+    steps:
       - slack/notify:
           event: pass
-          template: success_tagged_deploy_1
+          mentions: "@cicd-pipeline"
+          template: basic_success_1
 
+jobs:
   build-frontend:
     docker:
       - image: circleci/node:13.8.0
@@ -32,7 +34,8 @@ jobs:
       - save_cache:
           paths: [frontend/node_modules]
           key: frontend-build
-      - slack-notification
+      - notify_slack_error
+      - notify_slack_pass
 
   build-backend:
     docker:
@@ -50,6 +53,8 @@ jobs:
       - save_cache:
           paths: [backend/node_modules]
           key: backend-build
+      - notify_slack_error
+      - notify_slack_pass
 
   test-frontend:
     docker:
@@ -64,6 +69,8 @@ jobs:
             cd frontend
             npm install
             npm run test
+      - notify_slack_error
+      - notify_slack_pass
 
   test-backend:
     docker:
@@ -78,6 +85,8 @@ jobs:
             cd backend
             npm install
             npm run test
+      - notify_slack_error
+      - notify_slack_pass
 
   scan-frontend:
     docker:
@@ -92,6 +101,8 @@ jobs:
             cd frontend
             npm install
             npm audit fix --audit-level=critical --force
+      - notify_slack_error
+      - notify_slack_pass
 
   scan-backend:
     docker:
@@ -106,6 +117,8 @@ jobs:
             cd backend
             npm install
             npm audit fix --audit-level=critical --force
+      - notify_slack_error
+      - notify_slack_pass
 
 workflows:
   default:
