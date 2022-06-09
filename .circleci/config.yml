@@ -143,14 +143,11 @@ jobs:
       - destroy-environment
   configure-infrastructure:
     docker:
-      - image: python:3.7-alpine3.11
+      - image: amazon/aws-cli
     steps:
-      - run: apk add --update curl
-      - run: apk add --update tar
-      - run: curl "https://awscli.amazonaws.com/awscli-exe-linux-x86_64-2.0.30.zip" -o "awscliv2.zip"
-      - run: unzip awscliv2.zip
-      - run: ./aws/install
-      - run: aws --version
+      - run: yum update -y
+      - run: yum install -y python3
+      - run: yum install -y tar
       - checkout
       - add_ssh_keys:
           fingerprints: ["27:63:a4:17:24:6d:8f:42:73:27:e9:9d:d4:6c:e6:f1"]
