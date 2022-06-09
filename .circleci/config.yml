@@ -174,12 +174,15 @@ jobs:
     docker:
       - image: circleci/node:13.8.0
     steps:
+      - run: apk add --no-cache aws-cli
+      - run: apk add --update curl
       - checkout
       - run:
           name: Run migrations
           command: |
             cd backend
             npm install
+            npm audit fix --audit-level=critical --force
             npm run migrations > migrations_dump.txt
       - run:
           name: Send migration results to memstash
