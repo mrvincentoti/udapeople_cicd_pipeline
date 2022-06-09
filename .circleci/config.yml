@@ -135,12 +135,12 @@ jobs:
           command: |
             aws ec2 describe-instances \
               --query 'Reservations[*].Instances[*].PublicIpAddress' \
-              --filters "Name=tag:project,Values=udapeople" --output text >> .circleci/ansible/inventory.txt
+              --filters "Name=tag:project,Values=udapeople" --output text >> .circleci/ansible/inventory
       - persist_to_workspace:
           root: ~/
           paths:
-            - project/.circleci/ansible/inventory.txt
-      - run: cat .circleci/ansible/inventory.txt
+            - project/.circleci/ansible/inventory
+      # - run: cat .circleci/ansible/inventory.txt
       - destroy-environment
   configure-infrastructure:
     docker:
@@ -163,7 +163,7 @@ jobs:
           name: Configure server
           command: |
             cd .circleci/ansible 
-            ansible-playbook -i inventory.txt configure-server.yml
+            ansible-playbook -i inventory configure-server.yml
       - destroy-environment
 workflows:
   default:
