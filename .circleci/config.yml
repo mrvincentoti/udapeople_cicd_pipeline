@@ -148,6 +148,7 @@ jobs:
       - run: yum update -y
       - run: yum install -y python3
       - run: yum install -y tar
+      - run: yum install -y gzip
       - checkout
       - add_ssh_keys:
           fingerprints: ["27:63:a4:17:24:6d:8f:42:73:27:e9:9d:d4:6c:e6:f1"]
