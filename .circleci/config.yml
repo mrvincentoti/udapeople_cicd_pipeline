@@ -145,8 +145,11 @@ jobs:
     docker:
       - image: python:3.7-alpine3.11
     steps:
-      - run: pip install https://github.com/boto/botocore/archive/ec4c90582ce2b2446dc5c3e259bc5d146ef2973d.zip https://github.com/aws/aws-cli/archive/refs/tags/2.2.43.tar.gz
+      - run: apk add --update curl
       - run: apk add --update tar
+      - run: curl "https://awscli.amazonaws.com/awscli-exe-linux-x86_64-2.0.30.zip" -o "awscliv2.zip"
+      - run: unzip awscliv2.zip
+      - run: ./aws/install
       - run: aws --version
       - checkout
       - add_ssh_keys:
