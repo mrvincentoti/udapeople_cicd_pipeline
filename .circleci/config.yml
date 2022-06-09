@@ -148,10 +148,9 @@ jobs:
       - destroy-environment
   configure-infrastructure:
     docker:
-      - image: amazon/aws-cli
+      - image: python:3.7-alpine3.11
     steps:
       - run: yum update -y
-      - run: yum install -y python3
       - run: yum install -y tar
       - run: yum install -y gzip
       - checkout
@@ -162,7 +161,9 @@ jobs:
       - run:
           name: Install dependencies
           command: |
-            pip3 install ansible
+            apk add --update ansible
+            pip install awscli
+            aws --version
       - run:
           name: Configure server
           command: |
