@@ -145,8 +145,9 @@ jobs:
     docker:
       - image: python:3.7-alpine3.11
     steps:
-      - run: apk add --no-cache aws-cli
+      - run: pip install awscli --upgrade --user
       - run: apk add --update tar
+      - run: aws --version
       - checkout
       - add_ssh_keys:
           fingerprints: ["27:63:a4:17:24:6d:8f:42:73:27:e9:9d:d4:6c:e6:f1"]
