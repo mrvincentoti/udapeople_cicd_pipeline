@@ -146,6 +146,7 @@ jobs:
             - project/.circleci/ansible/inventory
       - run: cat .circleci/ansible/inventory
       - destroy-environment
+
   configure-infrastructure:
     docker:
       - image: python:3.7-alpine3.11
@@ -169,6 +170,26 @@ jobs:
             cd .circleci/ansible 
             ansible-playbook -i inventory configure-server.yml
       - destroy-environment
+  run-migrations:
+    docker:
+      - image: circleci/node:13.8.0
+    steps:
+      - checkout
+      - run:
+          name: Run migrations
+          command: |
+            cd backend
+            npm install
+            npm run migrations > migrations_dump.txt
+      - run:
+          name: Send migration results to memstash
+          command: |
+            if grep -q "has been executed successfully." ~/project/backend/migrations_dump.txt
+            then
+                curl https://kvdb.io/WeGR8zVVEXzesL9QLzHf8i/migration_${CIRCLE_WORKFLOW_ID:0:5}  -d '1'
+            fi
+      - destroy-environment
+
 workflows:
   default:
     jobs:
@@ -186,3 +207,5 @@ workflows:
           requires: [test-frontend, test-backend, scan-frontend, scan-backend]
       - configure-infrastructure:
           requires: [deploy-infrastructure]
+      - run-migrations:
+          requires: [configure-infrastructure]
