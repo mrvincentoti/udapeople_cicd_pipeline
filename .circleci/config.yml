@@ -115,6 +115,10 @@ jobs:
           command: |
             yum install -y tar gzip
       - run:
+          name: Create inventory file
+          command: |
+            echo "[web]" > .circleci/ansible/inventory
+      - run:
           name: Ensure back-end infrastructure exists
           command: |
             aws cloudformation deploy \
