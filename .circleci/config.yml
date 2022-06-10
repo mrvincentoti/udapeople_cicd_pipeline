@@ -172,10 +172,12 @@ jobs:
       - destroy-environment
   run-migrations:
     docker:
-      - image: node:13-alpine
+      - image: circleci/node:13.8.0
     steps:
-      - run: apk add --no-cache aws-cli
-      - run: apk add --update curl
+      - run: yum update -y
+      - run: yum install awscli -y
+      - run: aws --version
+      - run: yum install curl -y
       - checkout
       - run:
           name: Run migrations
