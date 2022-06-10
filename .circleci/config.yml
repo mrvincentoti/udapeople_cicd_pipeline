@@ -115,7 +115,7 @@ jobs:
           command: |
             yum install -y tar gzip
       - run:
-          name: Create inventory file
+          name: Create inventory file on the fly
           command: |
             echo "[web]" > .circleci/ansible/inventory
       - run:
