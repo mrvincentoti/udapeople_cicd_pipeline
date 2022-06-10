@@ -172,7 +172,7 @@ jobs:
       - destroy-environment
   run-migrations:
     docker:
-      - image: circleci/node:13.8.0
+      - image: node:13-alpine
     steps:
       - run: apk add --no-cache aws-cli
       - run: apk add --update curl
