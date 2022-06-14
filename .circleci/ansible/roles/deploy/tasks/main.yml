@@ -1,31 +1,66 @@
+# ---
+# - name: "Copy zipped archive"
+#   become: true
+#   synchronize:
+#     src: ../../artifact.tar.gz
+#     dest: /home/ubuntu/artifact.tar.gz
+#     recursive: true
+
+# - name: Creates directory
+#   file:
+#     path: ~/backend_app
+#     state: directory
+
+# - name: Extract the zipped artifact
+#   args:
+#     chdir: /home/ubuntu/backend_app
+#   shell: |
+#     pwd
+#     tar xzvf artifact.tar.gz
+#     ls -la
+
+# - name: "delete anything that might already be running"
+#   become: true
+#   ignore_errors: true
+#   command: pm2 delete all
+
+# - name: "start server"
+#   become: true
+#   args:
+#     chdir: /home/ubuntu/backend_app
+#   shell: pm2 start npm -- start
 ---
-- name: "Copy zipped archive"
-  become: true
-  synchronize:
-    src: ../../artifact.tar.gz
-    dest: /home/ubuntu/artifact.tar.gz
-    recursive: true
+- name: "update and upgrade packages."
+  become: yes
+  apt:
+    upgrade: yes
+    update_cache: yes
+    cache_valid_time: 86400
+- name: remove unneeded deps
+  become: yes
+  apt:
+    autoremove: yes
+- name: install deps
+  become: yes
+  apt:
+    name: ["nodejs", "npm"]
+    state: latest
+    update_cache: yes
+- name: install pm2
+  become: yes
+  npm:
+    name: pm2
+    global: yes
+    state: latest
+    production: yes
+- name: extract artifact
+  become: yes
+  unarchive:
+    src: files/artifact.tar.gz
+    dest: .
 
-- name: Creates directory
-  file:
-    path: ~/backend_app
-    state: directory
-
-- name: Extract the zipped artifact
-  args:
-    chdir: /home/ubuntu/backend_app
+- name: start app
+  become: yes
   shell: |
-    pwd
-    tar xzvf artifact.tar.gz
-    ls -la
-
-- name: "delete anything that might already be running"
-  become: true
-  ignore_errors: true
-  command: pm2 delete all
-
-- name: "start server"
-  become: true
-  args:
-    chdir: /home/ubuntu/backend_app
-  shell: pm2 start npm -- start
+    pm2 stop all
+    pm2 start npm -- start
