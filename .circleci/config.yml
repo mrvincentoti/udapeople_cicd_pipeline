@@ -198,6 +198,7 @@ jobs:
     docker:
       - image: amazon/aws-cli
     steps:
+      - run: yum install -y tar gzip
       - checkout
       - attach_workspace:
           at: ~/
@@ -209,7 +210,6 @@ jobs:
             yum -y install curl
             curl -sL https://rpm.nodesource.com/setup_14.x | sudo bash -
             yum install -y nodejs
-            yum install -y tar gzip
             python -V
             pip -V
             ansible --version
