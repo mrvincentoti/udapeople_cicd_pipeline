@@ -1,4 +1,8 @@
 ---
+- name: "Install rsync"
+  become: true
+  command: apt install -y rsync
+
 - name: "Copy zipped archive"
   become: true
   synchronize:
