@@ -177,6 +177,8 @@ jobs:
     steps:
       - run: aws --version
       - checkout
+      - attach_workspace:
+          at: ~/
       - run:
           name: Run migrations
           command: |
