@@ -245,10 +245,9 @@ jobs:
       - run:
           name: Install dependencies
           command: |
-            apk add --update ansible
+            apk add --update ansible curl rsync openssh nodejs npm
             pip install awscli
             aws --version
-            apk add nodejs npm
       - run:
           name: Deploy backend
           command: |
