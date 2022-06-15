@@ -1,34 +1,3 @@
-# ---
-# - name: "Copy zipped archive"
-#   become: true
-#   synchronize:
-#     src: ../../artifact.tar.gz
-#     dest: /home/ubuntu/artifact.tar.gz
-#     recursive: true
-
-# - name: Creates directory
-#   file:
-#     path: ~/backend_app
-#     state: directory
-
-# - name: Extract the zipped artifact
-#   args:
-#     chdir: /home/ubuntu/backend_app
-#   shell: |
-#     pwd
-#     tar xzvf artifact.tar.gz
-#     ls -la
-
-# - name: "delete anything that might already be running"
-#   become: true
-#   ignore_errors: true
-#   command: pm2 delete all
-
-# - name: "start server"
-#   become: true
-#   args:
-#     chdir: /home/ubuntu/backend_app
-#   shell: pm2 start npm -- start
 ---
 - name: "update and upgrade packages."
   become: yes
@@ -36,11 +5,11 @@
     upgrade: yes
     update_cache: yes
     cache_valid_time: 86400
-- name: remove unneeded deps
+- name: remove redundant dependences
   become: yes
   apt:
     autoremove: yes
-- name: install deps
+- name: install dependences
   become: yes
   apt:
     name: ["nodejs", "npm"]
