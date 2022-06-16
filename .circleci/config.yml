@@ -5,6 +5,8 @@ commands:
     parameters:
       workflow_id:
         type: string
+        default: "${CIRCLE_WORKFLOW_ID}"
+
     steps:
       - run:
           name: Destroy environments
@@ -335,11 +337,32 @@ jobs:
             echo $URL
             if curl ${URL} | grep "Welcome"
             then
-              # Change this to 0 after the job fails
-              return 1
+              return 0
             else
               return 1
             fi
+      - destroy-environment:
+          workflow_id: ${CIRCLE_WORKFLOW_ID:0:5}
+      - revert-migrations:
+          workflow_id: ${CIRCLE_WORKFLOW_ID:0:5}
+
+  cloudfront-update:
+    docker:
+      - image: amazon/aws-cli
+    steps:
+      - checkout
+      - run:
+          name: Install dependencies
+          command: |
+            yum install -y tar gzip nodejs npm
+      - run:
+          name: Update cloudfront distribution
+          command: |
+            aws cloudformation deploy \
+            --template-file .circleci/files/cloudfront.yml \
+            --stack-name InitialStack \
+            --parameter-overrides WorkflowID=${CIRCLE_WORKFLOW_ID:0:5} \
+            --tags project=udapeople
       - destroy-environment:
           workflow_id: ${CIRCLE_WORKFLOW_ID:0:5}
       - revert-migrations:
