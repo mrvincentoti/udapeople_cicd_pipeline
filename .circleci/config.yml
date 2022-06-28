@@ -47,7 +47,7 @@ jobs:
     steps:
       - checkout
       - restore_cache:
-          keys: [frontend-build-002]
+          keys: [frontend-build]
       - run:
           name: Build front-end
           command: |
@@ -56,7 +56,7 @@ jobs:
             npm run build
       - save_cache:
           paths: [frontend/node_modules]
-          key: frontend-build-002
+          key: frontend-build
 
   build-backend:
     docker:
@@ -64,7 +64,7 @@ jobs:
     steps:
       - checkout
       - restore_cache:
-          keys: [backend-build-002]
+          keys: [backend-build]
       - run:
           name: Back-end build
           command: |
@@ -73,7 +73,7 @@ jobs:
             npm run build
       - save_cache:
           paths: [backend/node_modules]
-          key: backend-build-002
+          key: backend-build
 
   test-frontend:
     docker:
@@ -81,7 +81,7 @@ jobs:
     steps:
       - checkout
       - restore_cache:
-          keys: [frontend-build-002]
+          keys: [frontend-build]
       - run:
           name: Run frontend Test
           command: |
@@ -95,7 +95,7 @@ jobs:
     steps:
       - checkout
       - restore_cache:
-          keys: [backend-build-002]
+          keys: [backend-build]
       - run:
           name: Run backend Test
           command: |
@@ -109,7 +109,7 @@ jobs:
     steps:
       - checkout
       - restore_cache:
-          keys: [frontend-build-002]
+          keys: [frontend-build]
       - run:
           name: Scan frontend
           command: |
@@ -123,13 +123,14 @@ jobs:
     steps:
       - checkout
       - restore_cache:
-          keys: [backend-build-002]
+          keys: [backend-build]
       - run:
           name: Scan backend
           command: |
             cd backend
             npm install
             npm audit fix --audit-level=critical --force
+
   deploy-infrastructure:
     docker:
       - image: amazon/aws-cli
@@ -216,7 +217,7 @@ jobs:
           command: |
             apk add --update --no-cache tar gzip nodejs npm aws-cli curl
       - restore_cache:
-          keys: [backend-build-002]
+          keys: [backend-build]
       - run:
           name: Run migrations
           command: |
@@ -385,7 +386,7 @@ jobs:
           command: |
             apk add --update aws-cli ansible gzip nodejs npm tar
       - restore_cache:
-          keys: [backend-build-002]
+          keys: [backend-build]
       - attach_workspace:
           at: ~/
       - run:
