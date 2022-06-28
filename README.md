@@ -23,7 +23,7 @@ In this project, you will prove your mastery of the following learning objective
 - [Configuration Management](instructions/3-configuration-management.md)
 - [Turn Errors into Sirens](instructions/4-turn-errors-into-sirens.md)
 
-### Project Submission files
+### Project Submission file
 
 For your submission, please submit the following:
 
