@@ -277,9 +277,12 @@ jobs:
     steps:
       - checkout
       - add_ssh_keys:
-          fingerprints: ["27:63:a4:17:24:6d:8f:42:73:27:e9:9d:d4:6c:e6:f1"]
+          fingerprints:
+            - "27:63:a4:17:24:6d:8f:42:73:27:e9:9d:d4:6c:e6:f1"
       - attach_workspace:
           at: ~/
+      - restore_cache:
+          keys: [backend-build-002]
       - run:
           name: Install dependencies
           command: |
@@ -299,10 +302,10 @@ jobs:
             echo "Contents of the inventory file"
             cat inventory
             ansible-playbook -i inventory deploy-backend.yml
-      # - destroy-environment:
-      #     workflow_id: ${CIRCLE_WORKFLOW_ID:0:5}
-      # - revert-migrations:
-      #     workflow_id: ${CIRCLE_WORKFLOW_ID:0:5}
+      - destroy-environment:
+          workflow_id: ${CIRCLE_WORKFLOW_ID:0:5}
+      - revert-migrations:
+          workflow_id: ${CIRCLE_WORKFLOW_ID:0:5}
 
   # smoke-test:
   #   docker:
