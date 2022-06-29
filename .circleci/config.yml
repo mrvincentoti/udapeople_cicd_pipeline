@@ -197,6 +197,7 @@ jobs:
           name: Configure server
           command: |
             cd .circleci/ansible 
+            cat inventory
             ansible-playbook -i inventory configure-server.yml
             # save backend back to workspace
       - persist_to_workspace:
