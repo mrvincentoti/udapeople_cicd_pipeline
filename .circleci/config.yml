@@ -296,6 +296,8 @@ jobs:
             mkdir -p ~/project/.circleci/ansible/roles/deploy/files/
             mv artifact.tar.gz .circleci/ansible/roles/deploy/files/artifact.tar.gz
             cd .circleci/ansible
+            echo "Contents of the inventory file"
+            cat inventory
             ansible-playbook -i inventory deploy-backend.yml
       # - destroy-environment:
       #     workflow_id: ${CIRCLE_WORKFLOW_ID:0:5}
