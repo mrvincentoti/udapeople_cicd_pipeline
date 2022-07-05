@@ -1,18 +1,18 @@
 ---
-- name: "update and upgrade packages."
+- name: 'update and upgrade packages.'
   become: yes
   apt:
     upgrade: yes
     update_cache: yes
     cache_valid_time: 86400
-- name: remove redundant dependences
+- name: remove unneeded deps
   become: yes
   apt:
     autoremove: yes
-- name: install dependences
+- name: install deps
   become: yes
   apt:
-    name: ["nodejs", "npm"]
+    name: ['nodejs', 'npm']
     state: latest
     update_cache: yes
 - name: install pm2

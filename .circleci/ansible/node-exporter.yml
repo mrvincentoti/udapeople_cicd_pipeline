@@ -1,5 +1,5 @@
 ---
-- name: "configuration node exporter playbook."
+- name: 'configuration play.'
   hosts: web
   user: ubuntu
   become: true
